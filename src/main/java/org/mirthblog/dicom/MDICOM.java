@@ -34,6 +34,8 @@ import org.dcm4che3.json.JSONReader;
 import org.dcm4che3.json.JSONWriter;
 import org.dcm4che3.tool.common.CLIUtils;
 import org.dcm4che3.util.SafeClose;
+import org.dcm4che3.tool.dcm2jpg.Dcm2Jpg;
+import org.dcm4che3.tool.*;
 
 /**
  * Mirth DICOM processing to JSON
@@ -44,19 +46,35 @@ public class MDICOM
 
     public static void main( String[] args ) throws IOException{
     {
-        System.out.println( "Starting Main DICOM Processing..." );
+        System.out.println( "Starting Test DICOM Processing..." );
 
         //Place a DICOM file in /tmp/ for testing
         //set the dicomFileName string to the name of the file.
         String dicomFilePath = "/tmp/";
+        String dicomFilePathSrc = "/tmp/";
+        String dicomFilePathDst = "/var/tmp/";
         String dicomFileName = "image.dcm";
 
 	System.out.println("Processing File: "+dicomFilePath+dicomFileName);
+
+        System.out.println("Saving DICOM Image Attachment to: /var/tmp/"+dicomFileName+".jpg");
+        String attachRetVal = dicomAttachProcess(dicomFileName, dicomFilePathSrc, dicomFilePathDst);
+        System.out.println("Processing Complete with: "+attachRetVal);
 
 	String jsonDicomDoc = dicomFileProcess(dicomFileName,dicomFilePath);
 	System.out.println(jsonDicomDoc);
 
         }
+    }
+
+    public static String dicomAttachProcess(String filename, String directoryNameSrc, String directoryNameDst) {
+	String returnVal = directoryNameDst+filename+".jpg";
+	Dcm2Jpg main = new Dcm2Jpg();
+	String[] arguments = new String[] {directoryNameSrc+filename,directoryNameDst+filename+".jpg"};
+
+	Dcm2Jpg.main(arguments);
+	
+        return returnVal;
     }
 
     //Entry point for the Mirth Connect destination/channel
